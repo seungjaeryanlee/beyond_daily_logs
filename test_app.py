@@ -18,9 +18,9 @@ class BasicTestCode(unittest.TestCase):
         db_path = os.path.join(os.getcwd(), app.config['DB_DIR'])
         tester = os.path.isdir(db_path)
         self.assertTrue(tester)
-        tester = os.path.isfile(os.path.join(db_path, '2017.pkl'))
+        tester = os.path.isfile(os.path.join(db_path, app.config['LOGS_DB'], '2017.pkl'))
         self.assertTrue(tester)
-        tester = os.path.isfile(os.path.join(db_path, '2018.pkl'))
+        tester = os.path.isfile(os.path.join(db_path, app.config['LOGS_DB'], '2018.pkl'))
         self.assertTrue(tester)
 
     def test_exported_data(self):

@@ -10,7 +10,7 @@ from utils import nested_dict, get_logs_files, filter_parent_msg
 app = Flask(__name__)
 app.config.from_object('config.Config')
 
-def init_db():
+def init_log_db():
     """Initilize database from exported data"""
     db = nested_dict()
 
@@ -24,15 +24,15 @@ def init_db():
                 filter_parent_msg(logs_msgs, db)
 
     # Save data
-    db_path = os.path.join(os.getcwd(), app.config['DB_DIR'])
+    db_path = os.path.join(os.getcwd(), app.config['DB_DIR'], app.config['LOGS_DB'])
     for year in db.keys():
         with open(os.path.join(db_path, year + '.pkl'), 'wb') as f:
             pickle.dump(db[year], f, protocol=pickle.HIGHEST_PROTOCOL)
 
 ## It will be modified
-def read_db():
+def read_logs_db():
     """Read data"""
-    db_path = os.path.join(os.getcwd(), app.config['DB_DIR'])
+    db_path = os.path.join(os.getcwd(), app.config['DB_DIR'], app.config['LOGS_DB'])
     logs_files = os.listdir(db_path)
     db = []
     for logs_file in sorted(logs_files):
@@ -46,6 +46,6 @@ def index():
     return "Beyond daily logs"
 
 if __name__ == "__main__":
-    init_db()
-    db = read_db()
+    init_log_db()
+    db = read_logs_db()
     app.run()
