@@ -4,3 +4,4 @@ exported_db/
 *.swo
 *.swp
 *.pyc
+slack_token.py

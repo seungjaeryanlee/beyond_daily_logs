@@ -48,4 +48,5 @@ def index():
 if __name__ == "__main__":
     init_log_db()
     db = read_logs_db()
+#    pprint(db)
     app.run()
