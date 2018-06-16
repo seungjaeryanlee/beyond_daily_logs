@@ -21,13 +21,16 @@ def get_logs_files(db_path):
     return files
 
 
-def filter_parent_msg(messages, db_dict):
+def change_msg_to_db(messages, db_dict):
     """Filter parent messages from all messages and return nested dict"""
     for msg in messages:
         if Config.CHILDREN_USER_FLAG not in msg and 'user' in msg:
             ymd = datetime.fromtimestamp(float(msg['ts'])).strftime("%Y%m%d")
             year, month_date = ymd[:4], ymd[4:]
             user, text = msg['user'], msg['text']
-            db_dict[year][month_date][user] = text
+            if month_date in db_dict[year][user]:
+                db_dict[year][user][month_date].append(text)
+            else:
+                db_dict[year][user][month_date] = [text]
 
     return db_dict

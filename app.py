@@ -5,7 +5,7 @@ import json
 import pickle
 from pprint import pprint
 
-from utils import nested_dict, get_logs_files, filter_parent_msg
+from utils import nested_dict, get_logs_files, change_msg_to_db
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
@@ -21,7 +21,7 @@ def init_log_db():
         for log_file in logs_files[logs_dir]:
             with open(os.path.join(exported_db_path, logs_dir, log_file), 'rb') as f:
                 logs_msgs = json.load(f)
-                filter_parent_msg(logs_msgs, db)
+                change_msg_to_db(logs_msgs, db)
 
     # Save data
     db_path = os.path.join(os.getcwd(), app.config['DB_DIR'], app.config['LOGS_DB'])
