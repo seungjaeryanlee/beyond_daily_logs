@@ -1,4 +1,6 @@
 __pycache__/
+db/
+exported_db/
 *.swo
 *.swp
 *.pyc
