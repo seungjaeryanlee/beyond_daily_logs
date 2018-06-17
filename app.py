@@ -1,5 +1,5 @@
 #_*_ coding: utf-8 _*_
-from flask import Flask
+from flask import Flask, render_template, url_for
 import os
 import json
 import pickle
@@ -30,22 +30,22 @@ def init_log_db():
         with open(os.path.join(db_path, year + '.pkl'), 'wb') as f:
             pickle.dump(db[year], f, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 def read_logs_db(year):
-    """Read year logs data"""
+    """Read logs data for year"""
     db_path = os.path.join(os.getcwd(), app.config['DB_DIR'], app.config['LOGS_DB'], str(year) + '.pkl')
-    db = []
     with open(db_path, 'rb') as f:
-        db.append(pickle.load(f))
-    return db
+        db = pickle.load(f)
+        return db
 
 
 @app.route('/')
 def index():
-    return "Beyond daily logs"
+    year = datetime.date.today().year
+    db = read_logs_db(year)
+    my_data = db['minzy']
+    return render_template('index.html')
 
 if __name__ == "__main__":
 #    init_log_db()
-    year = datetime.date.today().year
-    db = read_logs_db(year)
-    pprint(db)
-#    app.run()
+    app.run()
