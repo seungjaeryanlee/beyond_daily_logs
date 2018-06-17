@@ -23,9 +23,19 @@ def get_channel_msg(slack, channel_id):
     messages = channel_history['messages']
     return messages
 
+def get_user_map(slack):
+    """Get user information and map id and real_name"""
+    users = dict()
+    user_list = slack.users.list().body['members']
+    for user in user_list:
+        if 'real_name' in user:
+            users[user['id']] = user['real_name']
 
-def fetch_daily_logs(slack, channel_name):
-    """Fetch messages of daily_logs channel"""
+    return users
+
+
+def update_logs_db(slack, channel_name):
+    """Update logs database from daily_logs channel"""
     channel_id = get_channel_id(slack, channel_name)
     if channel_id:
         channel_msgs = get_channel_msg(slack, channel_id)
@@ -45,6 +55,16 @@ def fetch_daily_logs(slack, channel_name):
     else:
         pass
 
+
+def update_user_db(slack):
+    """Update user database from slack"""
+    user_map = get_user_map(slack)
+    user_db_path = os.path.join(os.getcwd(), Config.DB_DIR, Config.USERS_DB)
+    with open(user_db_path, 'wb') as f:
+        pickle.dump(user_map, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 if __name__ == "__main__":
     dfab_slack = Slacker(TOKEN)
-    fetch_daily_logs(dfab_slack, Config.LOG_CHANNEL)
+    update_logs_db(dfab_slack, Config.LOG_CHANNEL)
+#    update_user_db(dfab_slack)

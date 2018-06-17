@@ -46,7 +46,7 @@ def index():
     return "Beyond daily logs"
 
 if __name__ == "__main__":
-    init_log_db()
+#    init_log_db()
     db = read_logs_db()
-#    pprint(db)
-    app.run()
+    pprint(db)
+#    app.run()

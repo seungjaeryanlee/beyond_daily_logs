@@ -22,6 +22,8 @@ class BasicTestCode(unittest.TestCase):
         self.assertTrue(tester)
         tester = os.path.isfile(os.path.join(db_path, app.config['LOGS_DB'], '2018.pkl'))
         self.assertTrue(tester)
+        tester = os.path.isfile(os.path.join(db_path, app.config['USERS_DB']))
+        self.assertTrue(tester)
 
     def test_exported_data(self):
         """Check existance and file extension of exported database"""

@@ -3,7 +3,7 @@ class Config(object):
     """Configuration"""
     DB_DIR = "db"
     LOGS_DB = "logs"
-    USERS_DB = "users"
+    USERS_DB = "users/users.pkl"
     EXPORTED_DB_DIR = "exported_db"
     LOG_CHANNEL = "daily-logs"
     PAST_LOG_CHANNELS = ["daily-logs-alpha"]
