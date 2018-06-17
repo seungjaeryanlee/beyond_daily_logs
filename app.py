@@ -3,6 +3,7 @@ from flask import Flask
 import os
 import json
 import pickle
+import datetime
 from pprint import pprint
 
 from utils import nested_dict, get_logs_files, change_msg_to_db
@@ -29,15 +30,12 @@ def init_log_db():
         with open(os.path.join(db_path, year + '.pkl'), 'wb') as f:
             pickle.dump(db[year], f, protocol=pickle.HIGHEST_PROTOCOL)
 
-## It will be modified
-def read_logs_db():
-    """Read data"""
-    db_path = os.path.join(os.getcwd(), app.config['DB_DIR'], app.config['LOGS_DB'])
-    logs_files = os.listdir(db_path)
+def read_logs_db(year):
+    """Read year logs data"""
+    db_path = os.path.join(os.getcwd(), app.config['DB_DIR'], app.config['LOGS_DB'], str(year) + '.pkl')
     db = []
-    for logs_file in sorted(logs_files):
-        with open(os.path.join(db_path, logs_file), 'rb') as f:
-            db.append(pickle.load(f))
+    with open(db_path, 'rb') as f:
+        db.append(pickle.load(f))
     return db
 
 
@@ -47,6 +45,7 @@ def index():
 
 if __name__ == "__main__":
 #    init_log_db()
-    db = read_logs_db()
+    year = datetime.date.today().year
+    db = read_logs_db(year)
     pprint(db)
 #    app.run()

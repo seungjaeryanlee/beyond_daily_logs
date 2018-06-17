@@ -17,9 +17,9 @@ def get_channel_id(slack, channel_name):
     return None
 
 
-def get_channel_msg(slack, channel_id):
+def get_channel_msg(slack, channel_id, num_msg):
     """Get channel history messages"""
-    channel_history = slack.channels.history(channel=channel_id, count=Config.MSG_COUNT).body
+    channel_history = slack.channels.history(channel=channel_id, count=num_msg).body
     messages = channel_history['messages']
     return messages
 
@@ -34,11 +34,11 @@ def get_user_map(slack):
     return users
 
 
-def update_logs_db(slack, channel_name):
+def update_logs_db(slack, channel_name, num_msg):
     """Update logs database from daily_logs channel"""
     channel_id = get_channel_id(slack, channel_name)
     if channel_id:
-        channel_msgs = get_channel_msg(slack, channel_id)
+        channel_msgs = get_channel_msg(slack, channel_id, num_msg)
         year = datetime.date.today().year
         logs_db_path = os.path.join(os.getcwd(), Config.DB_DIR, Config.LOGS_DB, str(year) + '.pkl')
 
@@ -66,5 +66,5 @@ def update_user_db(slack):
 
 if __name__ == "__main__":
     dfab_slack = Slacker(TOKEN)
-    update_logs_db(dfab_slack, Config.LOG_CHANNEL)
+    update_logs_db(dfab_slack, Config.LOG_CHANNEL, Config.MSG_COUNT)
 #    update_user_db(dfab_slack)
