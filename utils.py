@@ -1,9 +1,11 @@
 #_*_ coding: utf-8 _*_
 import os
+import re
 import pickle
 from collections import defaultdict
 from datetime import datetime
 from config import Config
+from pprint import pprint
 
 def nested_dict():
     """Create nested dictionary"""
@@ -21,8 +23,9 @@ def get_logs_files(db_path):
 
     return files
 
+
 def change_id_to_name(user_id):
-    """ """
+    """Change user id to user real name"""
     user_db_path = os.path.join(os.getcwd(), Config.DB_DIR, Config.USERS_DB)
     with open(user_db_path, 'rb') as f:
         user_db = pickle.load(f) 
@@ -31,24 +34,56 @@ def change_id_to_name(user_id):
         else:
             return None
 
-def change_msg_to_db(messages, db_dict, year_db=False):
-    """Filter parent messages from all messages and create database"""
+
+def parse_tasks(text):
+    """Parse text and categorize tasks"""
+    text = re.sub('[\n]+','\n', text)
+    matching_str = re.findall('[*]([\u3131-\u3163\uac00-\ud7a3\s]+)[*]\n([^*]+)', text)
+    task_logs = dict()
+    task_category = dict()
+
+    if matching_str:
+        for (title, task) in matching_str:
+            task_list = task.split('\n')
+            task_list = [ t for t in task_list if len(t) > 0 ]
+            task_logs[title] = task_list
+            for t in task_list:
+                task_type_str = re.search('\[(\w+)\]', t)
+                if task_type_str:
+                    task_type = task_type_str.group(1)
+                else:
+                    task_type = Config.ETC_TASK_NAME
+
+                if task_type in task_category:
+                    task_category[task_type] += 1
+                else:
+                    task_category[task_type] = 1
+
+    return task_logs, task_category
+
+
+def change_msg_to_db(messages, logs_db_dict, category_db_dict, year_db=False):
+    """Filter parent messages from all messages and update logs and category database"""
     for msg in messages:
         if Config.CHILDREN_USER_FLAG not in msg and 'user' in msg:
-            ymd = datetime.fromtimestamp(float(msg['ts'])).strftime("%Y%m%d")
-            year, month_date = ymd[:4], ymd[4:]
-            if year_db:
-                db = db_dict
-            else:
-                db = db_dict[year]
+            text = msg['text']
+            task_logs, task_category = parse_tasks(text)
 
-            user_id, text = msg['user'], msg['text']
-            user_name = change_id_to_name(user_id)
-            user = user_name if user_name else user_id
-            if month_date in db[user]:
-                if text not in db[user][month_date]:
-                    db[user][month_date].append(text)
-            else:
-                db[user][month_date] = [text]
+            if task_logs:
+                ymd = datetime.fromtimestamp(float(msg['ts'])).strftime("%Y%m%d")
+                year, month, date = ymd[:4], ymd[4:6], ymd[6:]
 
-    return db_dict
+                if year_db:
+                    logs_db = logs_db_dict
+                    category_db = category_db_dict
+                else:
+                    logs_db = logs_db_dict[year]
+                    category_db = category_db_dict[year]
+
+                user_id = msg['user']
+                user_name = change_id_to_name(user_id)
+                user = user_name if user_name else user_id
+
+                if date not in logs_db[user][month]:
+                    logs_db[user][month][date] = task_logs
+                    category_db[user][month][date] = task_category

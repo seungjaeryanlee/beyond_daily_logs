@@ -35,23 +35,28 @@ def get_user_map(slack):
 
 
 def update_logs_db(slack, channel_name, num_msg):
-    """Update logs database from daily_logs channel"""
+    """Update logs and category database from daily_logs channel"""
     channel_id = get_channel_id(slack, channel_name)
     if channel_id:
         channel_msgs = get_channel_msg(slack, channel_id, num_msg)
         year = datetime.date.today().year
-        logs_db_path = os.path.join(os.getcwd(), Config.DB_DIR, Config.LOGS_DB, str(year) + '.pkl')
+        db_path = os.path.join(os.getcwd(), Config.DB_DIR, Config.LOGS_DB)
+        logs_db_path = os.path.join(db_path, str(year) + '.pkl')
+        category_db_path = os.path.join(db_path, str(year) + '_category.pkl')
 
         if os.path.exists(logs_db_path) and os.path.getsize(logs_db_path) > 0:
-            with open(logs_db_path, 'rb') as f:
+            with open(logs_db_path, 'rb') as f, open(category_db_path, 'rb') as g:
                 logs_db = pickle.load(f)
-                change_msg_to_db(channel_msgs, logs_db, year_db=True)
+                category_db = pickle.load(g)
+                change_msg_to_db(channel_msgs, logs_db, category_db, year_db=True)
         else:
             logs_db = nested_dict()
-            change_msg_to_db(channel_msgs, logs_db, year_db=True)
+            category_db = nested_dict()
+            change_msg_to_db(channel_msgs, logs_db, category_db, year_db=True)
 
-        with open(logs_db_path, 'wb') as f:
+        with open(logs_db_path, 'wb') as f, open(category_db_path, 'wb') as g:
             pickle.dump(logs_db, f, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(category_db, g, protocol=pickle.HIGHEST_PROTOCOL)
     else:
         pass
 

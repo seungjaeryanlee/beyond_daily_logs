@@ -9,4 +9,5 @@ class Config(object):
     PAST_LOG_CHANNELS = ["daily-logs-alpha"]
     CHILDREN_USER_FLAG = 'parent_user_id'
     MSG_COUNT = 1000
+    ETC_TASK_NAME = 'ETC'
     TEST = False
