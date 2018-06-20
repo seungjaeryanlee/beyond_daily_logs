@@ -10,4 +10,5 @@ class Config(object):
     CHILDREN_USER_FLAG = 'parent_user_id'
     MSG_COUNT = 1000
     ETC_TASK_NAME = 'ETC'
+    TASK_TYPE = ['완료', '오늘 할 일', '일시정지']
     TEST = False

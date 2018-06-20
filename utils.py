@@ -44,20 +44,23 @@ def parse_tasks(text):
 
     if matching_str:
         for (title, task) in matching_str:
-            task_list = task.split('\n')
-            task_list = [ t for t in task_list if len(t) > 0 ]
-            task_logs[title] = task_list
-            for t in task_list:
-                task_type_str = re.search('\[(\w+)\]', t)
-                if task_type_str:
-                    task_type = task_type_str.group(1)
-                else:
-                    task_type = Config.ETC_TASK_NAME
+            if title in Config.TASK_TYPE:
+                task_list = task.split('\n')
+                task_list = [ t for t in task_list if len(t) > 0 ]
+                task_logs[title] = task_list
+                task_category[title] = {}
 
-                if task_type in task_category:
-                    task_category[task_type] += 1
-                else:
-                    task_category[task_type] = 1
+                for t in task_list:
+                    task_type_str = re.search('\[(\w+)\]', t)
+                    if task_type_str:
+                        task_type = task_type_str.group(1)
+                    else:
+                        task_type = Config.ETC_TASK_NAME
+
+                    if task_type in task_category[title]:
+                        task_category[title][task_type] += 1
+                    else:
+                        task_category[title][task_type] = 1
 
     return task_logs, task_category
 
