@@ -6,7 +6,8 @@ import datetime
 from slack_token import TOKEN
 from config import Config
 from utils import change_msg_to_db, nested_dict
-from pprint import pprint
+from pprint import pprint # TODO: Unused import?
+
 
 def get_channel_id(slack, channel_name):
     """Get channel id"""
@@ -25,6 +26,7 @@ def get_channel_msg(slack, channel_id, num_msg):
 
 def get_user_map(slack):
     """Get user information and map id and real_name"""
+    # TODO: Any reason to use dict() instead of {}?
     users = dict()
     user_list = slack.users.list().body['members']
     for user in user_list:

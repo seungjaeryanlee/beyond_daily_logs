@@ -9,6 +9,8 @@ from pprint import pprint
 
 def nested_dict():
     """Create nested dictionary"""
+    # TODO More description of what this function returns would be helpful.
+    #      Is the intended effect to have defaultdict as a default value?
     return defaultdict(nested_dict)
 
 
@@ -37,11 +39,12 @@ def change_id_to_name(user_id):
 
 def parse_tasks(text):
     """Parse text and categorize tasks"""
-    text = re.sub('[\n]+','\n', text)
-    matching_str = re.findall('[*]([\u3131-\u3163\uac00-\ud7a3\s]+)[*]\n([^*]+)', text)
+    # TODO Is there a particular reason you called dict() instead of {}?
     task_logs = dict()
     task_category = dict()
 
+    text = re.sub('[\n]+','\n', text)
+    matching_str = re.findall('[*]([\u3131-\u3163\uac00-\ud7a3\s]+)[*]\n([^*]+)', text)
     if matching_str:
         for (title, task) in matching_str:
             if title in Config.TASK_TYPE:
