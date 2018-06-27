@@ -58,7 +58,7 @@ def index():
     logs_db, category_db = read_db(year)
     user = 'minzy'
     my_logs = logs_db[user][month]
-    type_logs = dict()
+    type_logs = dict() # TODO dict() vs {}?
 
     for date in sorted(my_logs.keys()):
         tasks = my_logs[date]
@@ -79,12 +79,12 @@ def index():
                     category_count[task_type][task_cate] += cate[task_type][task_cate]
                 else:
                     category_count[task_type][task_cate] = cate[task_type][task_cate]
-    
-    done_cate, todo_cate, pause_cate = dict(), dict(), dict()
+
+    done_cate, todo_cate, pause_cate = dict(), dict(), dict() # TODO dict() vs {}?
     done_cate = category_count[app.config['TASK_TYPE'][0]] 
     todo_cate = category_count[app.config['TASK_TYPE'][1]] 
     pause_cate = category_count[app.config['TASK_TYPE'][2]] 
-    
+
     return render_template('index.html', types=app.config['TASK_TYPE'], type_logs=type_logs, month=month, done_cate=done_cate, todo_cate=todo_cate, pause_cate=pause_cate, category_count=category_count)
 
 if __name__ == "__main__":
