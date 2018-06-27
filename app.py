@@ -16,7 +16,7 @@ def init_log_db():
     logs_db = nested_dict()
     category_db = nested_dict()
 
-    # Lode data
+    # Load data
     exported_db_path = os.path.join(os.getcwd(), app.config['EXPORTED_DB_DIR'])
     logs_files = get_logs_files(exported_db_path)
     for logs_dir in logs_files.keys():

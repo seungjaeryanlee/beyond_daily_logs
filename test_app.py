@@ -8,7 +8,7 @@ from utils import get_logs_files
 # TODO Rename 'BasicTestCode' class
 class BasicTestCode(unittest.TestCase):
 
-    def text_index(self):
+    def test_index(self):
         """Check flask set up correctly"""
         tester = app.test_client(self)
         resp = tester.get('/', content_type='html/text')
